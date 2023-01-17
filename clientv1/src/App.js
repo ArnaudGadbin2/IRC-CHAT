@@ -16,6 +16,7 @@ function App(){
         });
     }, [socket]);
     return <div className="App">
+      <h1>Welcome to IRC CHAT</h1>
         <input 
         placeholder="Message"
         onChange = {(event) =>{
