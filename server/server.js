@@ -1,18 +1,24 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
+var router = require('./router');
 
-var users = [];
+var bodyParser = require("body-parser");
 
-var rooms = ['general'];
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-io.on('connection', (socket, messages) => {
+app.use(router)
+
+
+io.on('connection', (socket) => {
     var currentUser = '';
 
     socket.on('connect', (user) => {
         users.push(user.username);
         currentUser = user.username;
-    
+
         io.emit('getUsers', {
             user: users
         })
@@ -42,13 +48,13 @@ io.on('connection', (socket, messages) => {
         }
     })
 
-    socket.on('new-message', function(message) {
-        io.emit('new-message', {
+    socket.on('new-message', function (message) {
+        io.emit('new-message-sent', {
             messages: message
         })
     })
 
-    socket.on('createRoom', function(room) {
+    socket.on('createRoom', function (room) {
         rooms.push(room.room);
 
         io.emit('getRooms', {
@@ -57,6 +63,6 @@ io.on('connection', (socket, messages) => {
     })
 });
 
-http.listen(5000, function(){
+http.listen(5000, function () {
     console.log('server listening on port 5000:');
 });
