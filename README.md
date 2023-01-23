@@ -3,7 +3,7 @@ This project is part of the PreMsc cursus at Epitech.
 This is a text chat with editable channels.
 	
 ## Technologies
-Project uses Node, Express, SocketIO, React.
+Project uses Node, Express, SocketIO, React, Mongodb.
 	
 ## Setup
 Project still in developpement.
