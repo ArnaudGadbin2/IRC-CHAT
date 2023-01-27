@@ -1,8 +1,19 @@
 var express = require('express');
 var app = express();
 var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "http://localhost:3000"
+    }
+});
 var router = require('./router');
+const mongoose = require('mongoose')
+
+var userSchema = require('./db').userSchema;
+var roomSchema = require('./db').roomSchema;
+
+var User = mongoose.model('User', userSchema);
+var Room = mongoose.model('Room', roomSchema);
 
 var bodyParser = require("body-parser");
 
@@ -14,21 +25,21 @@ app.use(router)
 
 io.on('connection', (socket) => {
     var currentUser = '';
+    
+    socket.on('UserLogged', (username) => {
+        var user = new User();
+        user.name = username.username;
+        user.password = "pppl";
+        user.rooms = ['general'];
+        user.save();
+        currentUser = username.username;
 
-    socket.on('connect', (user) => {
-        users.push(user.username);
-        currentUser = user.username;
+        io.emit('getUsers')
 
-        io.emit('getUsers', {
-            user: users
-        })
-
-        io.emit('getRooms', {
-            rooms: rooms
-        })
+        io.emit('getRooms')
 
         socket.broadcast.emit('userJoined', {
-            username: user.username
+            username: username.username
         })
 
     });
@@ -39,12 +50,7 @@ io.on('connection', (socket) => {
             socket.broadcast.emit('userLeft', {
                 username: currentUser
             })
-
-            users = users.filter(user => user !== currentUser);
-
-            io.emit('getUsers', {
-                user: users
-            })
+            User.deleteMany({ name: currentUser}).then(io.emit('getUsers'))
         }
     })
 
@@ -54,12 +60,13 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('createRoom', function (room) {
-        rooms.push(room.room);
+    socket.on('createRoom', function (roomname) {
+        var room = new Room();
+        room.name = roomname.name;
+        room.messages = {};
+        room.save();
 
-        io.emit('getRooms', {
-            rooms: rooms
-        })
+        io.emit('getRooms')
     })
 });
 
