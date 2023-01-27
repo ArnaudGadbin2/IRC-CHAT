@@ -55,9 +55,19 @@ io.on('connection', (socket) => {
     })
 
     socket.on('new-message', function (message) {
+        Room.updateOne({ name: message.room}, {$addToSet : {messages: {message: message.messages.content, sender: currentUser}}}).then(
         io.emit('new-message-sent', {
             messages: message
         })
+        )
+        io.emit('getRooms')
+    })
+
+    socket.on('nickname', function (nick) {
+        User.updateOne({ name: currentUser}, {name: nick.nick}).then(
+            io.emit('getUsers')
+        )
+        currentUser = nick.nick
     })
 
     socket.on('createRoom', function (roomname) {

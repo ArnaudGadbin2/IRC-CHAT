@@ -40,8 +40,8 @@ class App extends Component {
         socket.on('userLeft', (user) => {
             this.setState({
                 messages: this.state.messages.concat({
-                    channel: this.state.currentRoom,
-                    author: 'server',
+                    room: this.state.currentRoom,
+                    sender: 'server',
                     content: user.username + ' left the channel',
                     to: ''
                 })
@@ -67,10 +67,10 @@ class App extends Component {
         socket.on('new-message-sent', (message) => {
             this.setState({
                 messages: this.state.messages.concat({
-                    room: message.room,
-                    sender: message.sender,
-                    content: message.content,
-                    to: message.to
+                    room: message.messages.messages.room,
+                    sender: message.messages.messages.sender,
+                    content: message.messages.messages.content,
+                    to: message.messages.messages.to
                 })
             })
         })
@@ -81,6 +81,15 @@ class App extends Component {
         this.setState({ currentRoom: room })
     }
 
+    Nick(name) {
+        socket.emit('nickname', { nick: name })
+        this.setState({ username: name })
+    }
+
+    Create(room) {
+        socket.emit('createRoom', { name: room })
+        this.setState({ currentRoom: room })
+    }
 
     //input change handler
     handleChange(event) {
@@ -105,17 +114,30 @@ class App extends Component {
         switch (typedData[0]) {
             case '/create':
                 if (typedData[1] !== undefined && typedData[1] !== '') {
-                    this.Create(typedData);
+                    this.Create(typedData[1]);
                 }
                 this.setState({ tmp: '' });
                 return false;
             case '/join':
                 if (typedData[1] !== undefined && typedData[1] !== '') {
-                    this.Join(typedData);
+                    this.Join(typedData[1]);
                 }
+                this.setState({ tmp: '' });
                 return false;
+            case '/quit':
+                if (typedData[1] !== undefined && typedData[1] !== '') {
+                    this.Join('general');
+                }
+                this.setState({ tmp: '' });
+                return false;
+            case '/nick':
+                if (typedData[1] !== undefined && typedData[1] !== '') {
+                    this.Nick(typedData[1]);
+                }
+                this.setState({ tmp: '' });
+                return true;
             default:
-                socket.emit('new-message', { messages: this.state.currentMsg });
+                socket.emit('new-message', { messages: this.state.currentMsg, room: this.state.currentRoom });
                 this.setState({ tmp: '' });
         }
     }
@@ -216,7 +238,7 @@ class App extends Component {
                 </div>
             )
         }
-        return (<p> {this.state.username} est rentré sur le channel</p>);
+        return (<p> {this.state.username} joined the room</p>);
     }
 }
 
