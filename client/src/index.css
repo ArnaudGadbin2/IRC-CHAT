@@ -6,9 +6,28 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 40px;
+  background-color: deepskyblue;
+  background-size: cover;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+h1{
+  background-color: mediumpurple;
+  display: flex;
+  text-align: center;
+  font-size: 60px;
+  text-shadow: 1px 3px 2px black;
+  text-decoration: underline;
+}
+button{
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  text-align: center;
+  font-size: 45px;
 }

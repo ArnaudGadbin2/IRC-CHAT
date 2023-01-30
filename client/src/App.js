@@ -176,7 +176,7 @@ class App extends Component {
             return (
                 <div className="flex justify-center text-center p-8">
                     <div className="username">
-                        <h1>IRC login</h1>
+                        <h1>Welcome to IRC login</h1>
                         <div className="p-8">
                             <span className="label">
                                 Enter your pseudo :
