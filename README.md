@@ -8,13 +8,20 @@ Project uses Node, Express, SocketIO, React, Mongodb.
 ## Setup
 Project still in developpement.
 ```
-$ cd server
+$ cd server/
+$ sudo touch .env
 ```
-fill out .env file
+fill out .env file like:
+MONGODBCONNECTION="your-mongo-link"
 
 ```
 $ npm i
 $ npm run start
 ```
+```
+cd client/
+$ npm i
+$ npm run start
+```
 
-got to [http://localhost](http://localhost:5000/rooms)
+got to [http://localhost](http://localhost:3000)
