@@ -24,4 +24,4 @@ $ npm i
 $ npm run start
 ```
 
-got to [http://localhost](http://localhost:3000)
+got to [http://localhost:3000](http://localhost:3000)
